@@ -1,0 +1,27 @@
+# Compilados y artefactos de build
+bin/
+obj/
+wwwroot/_framework/
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.userprefs
+
+# JetBrains Rider
+*.sln.iml
+
+# Logs
+*.log
+logs/
+
+# NuGet
+*.nupkg
+.nuget/
+packages/
+
+# macOS
+.DS_Store
