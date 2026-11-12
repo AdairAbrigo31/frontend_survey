@@ -1,5 +1,7 @@
 namespace frontend_survey.Models;
 
+public record AnswerRequest(Guid QuestionId, int? NumericValue, string? TextValue);
+
 public record IndicatorResponse(Guid Id, string Code, string Name, int ScaleMin, int ScaleMax);
 
 public record SurveyQuestionResponse(

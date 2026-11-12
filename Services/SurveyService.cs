@@ -7,4 +7,7 @@ public class SurveyService(HttpClient http)
 {
     public async Task<SurveyResponse?> GetByTokenAsync(string token) =>
         await http.GetFromJsonAsync<SurveyResponse>($"api/survey/{token}");
+
+    public async Task<HttpResponseMessage> SubmitAsync(string token, List<AnswerRequest> answers) =>
+        await http.PostAsJsonAsync($"api/survey/{token}/submit", new { Answers = answers });
 }

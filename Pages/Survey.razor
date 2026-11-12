@@ -5,27 +5,92 @@
 {
     <p>Cargando encuesta...</p>
 }
+else if (submitted)
+{
+    <h1>Gracias por tu respuesta</h1>
+    <p>Tus respuestas fueron registradas correctamente.</p>
+}
 else if (survey is not null)
 {
     <h1>@survey.Name</h1>
 
-    <ol>
-        @foreach (var question in survey.Questions)
-        {
-            <li>@question.QuestionText</li>
-        }
-    </ol>
+    @foreach (var question in survey.Questions)
+    {
+        <div>
+            <p>@question.QuestionText</p>
+
+            @if (question.Type == Quantitative && question.Indicator is not null)
+            {
+                <div>
+                    @for (var i = question.Indicator.ScaleMin; i <= question.Indicator.ScaleMax; i++)
+                    {
+                        var score = i;
+                        <button type="button"
+                                style="@(numericAnswers.GetValueOrDefault(question.QuestionId) == score ? "font-weight:bold;text-decoration:underline;" : "")"
+                                @onclick="() => numericAnswers[question.QuestionId] = score">
+                            @score
+                        </button>
+                    }
+                </div>
+            }
+            else if (question.Type == Qualitative)
+            {
+                <textarea @bind="textAnswers[question.QuestionId]" rows="3"></textarea>
+            }
+        </div>
+    }
+
+    <button type="button" disabled="@isSubmitting" @onclick="HandleSubmit">
+        @(isSubmitting ? "Enviando..." : "Enviar")
+    </button>
 }
 
 @code {
+    private const string Quantitative = "quantitative";
+    private const string Qualitative = "qualitative";
+
     [Parameter] public string Token { get; set; } = string.Empty;
 
     private SurveyResponse? survey;
     private bool isLoading = true;
+    private bool isSubmitting = false;
+    private bool submitted = false;
+
+    private Dictionary<Guid, int?> numericAnswers = new();
+    private Dictionary<Guid, string?> textAnswers = new();
 
     protected override async Task OnInitializedAsync()
     {
         survey = await SurveyService.GetByTokenAsync(Token);
         isLoading = false;
+
+        if (survey is null) return;
+
+        foreach (var q in survey.Questions)
+        {
+            if (q.Type == Quantitative)
+                numericAnswers[q.QuestionId] = null;
+            else
+                textAnswers[q.QuestionId] = null;
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (survey is null) return;
+
+        isSubmitting = true;
+
+        var answers = survey.Questions
+            .Select(q => new AnswerRequest(
+                q.QuestionId,
+                q.Type == Quantitative ? numericAnswers.GetValueOrDefault(q.QuestionId) : null,
+                q.Type == Qualitative ? textAnswers.GetValueOrDefault(q.QuestionId) : null))
+            .ToList();
+
+        await SurveyService.SubmitAsync(Token, answers);
+
+        isSubmitting = false;
+        submitted = true;
     }
 }
