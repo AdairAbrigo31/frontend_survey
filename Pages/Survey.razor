@@ -1,3 +1,31 @@
-@page "/survey"
+@page "/survey/{token}"
+@inject SurveyService SurveyService
 
-<h1>Encuesta</h1>
+@if (isLoading)
+{
+    <p>Cargando encuesta...</p>
+}
+else if (survey is not null)
+{
+    <h1>@survey.Name</h1>
+
+    <ol>
+        @foreach (var question in survey.Questions)
+        {
+            <li>@question.QuestionText</li>
+        }
+    </ol>
+}
+
+@code {
+    [Parameter] public string Token { get; set; } = string.Empty;
+
+    private SurveyResponse? survey;
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        survey = await SurveyService.GetByTokenAsync(Token);
+        isLoading = false;
+    }
+}

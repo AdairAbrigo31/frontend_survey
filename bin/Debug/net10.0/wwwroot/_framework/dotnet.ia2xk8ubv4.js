@@ -5,7 +5,7 @@ var e=!1;const t=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,
   "mainAssemblyName": "frontend_survey",
   "applicationEnvironment": "Development",
   "resources": {
-    "hash": "sha256-ur2V4L+f+79cEJe2sF6aq34VMdDCJQ1G504ipprvnZQ=",
+    "hash": "sha256-CbIeTeYzODKeOVZwvBiSVovYL4OUYtAEzHweNKsBHxE=",
     "jsModuleNative": [
       {
         "name": "dotnet.native.vzj2a6aakt.js"
@@ -1242,16 +1242,16 @@ var e=!1;const t=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,
       },
       {
         "virtualPath": "frontend_survey.wasm",
-        "name": "frontend_survey.w1aq0f4se2.wasm",
-        "hash": "sha256-nG6spqC9HFLE443YOJreiEcwPhlZmrH7X0iqY+6IMRc=",
+        "name": "frontend_survey.eikg0p4dvz.wasm",
+        "hash": "sha256-1k/W8vfLCg1SCsG9KbBCuLZZOBi8tDJDZSogBDDeKC4=",
         "cache": "force-cache"
       }
     ],
     "pdb": [
       {
         "virtualPath": "frontend_survey.pdb",
-        "name": "frontend_survey.rky6hobjuc.pdb",
-        "hash": "sha256-dYqlrHuvu9+NWsKmWAr+5XwUMgoDQ4hgi257fifFIHw=",
+        "name": "frontend_survey.l4mi06ox5w.pdb",
+        "hash": "sha256-eyeOfJJ6OEXmvAkPNB0+VL5Bx45d6s/RdKtyVXJGyXc=",
         "cache": "force-cache"
       }
     ],
@@ -1267,6 +1267,9 @@ var e=!1;const t=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,
     ]
   },
   "debugLevel": -1,
+  "appsettings": [
+    "../appsettings.json"
+  ],
   "globalizationMode": "sharded",
   "extensions": {
     "blazor": {}
