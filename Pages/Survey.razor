@@ -5,6 +5,10 @@
 {
     <p>Cargando encuesta...</p>
 }
+else if (errorMessage is not null)
+{
+    <p>@errorMessage</p>
+}
 else if (submitted)
 {
     <h1>Gracias por tu respuesta</h1>
@@ -55,6 +59,7 @@ else if (survey is not null)
     private bool isLoading = true;
     private bool isSubmitting = false;
     private bool submitted = false;
+    private string? errorMessage;
 
     private Dictionary<Guid, int?> numericAnswers = new();
     private Dictionary<Guid, string?> textAnswers = new();
@@ -64,7 +69,11 @@ else if (survey is not null)
         survey = await SurveyService.GetByTokenAsync(Token);
         isLoading = false;
 
-        if (survey is null) return;
+        if (survey is null)
+        {
+            errorMessage = "Este enlace no es válido o ha expirado.";
+            return;
+        }
 
         foreach (var q in survey.Questions)
         {
@@ -88,9 +97,20 @@ else if (survey is not null)
                 q.Type == Qualitative ? textAnswers.GetValueOrDefault(q.QuestionId) : null))
             .ToList();
 
-        await SurveyService.SubmitAsync(Token, answers);
-
+        var response = await SurveyService.SubmitAsync(Token, answers);
         isSubmitting = false;
-        submitted = true;
+
+        if (response.IsSuccessStatusCode)
+        {
+            submitted = true;
+        }
+        else if ((int)response.StatusCode == 409)
+        {
+            errorMessage = "Esta encuesta ya fue respondida.";
+        }
+        else
+        {
+            errorMessage = "Ocurrió un error al enviar tus respuestas. Intenta de nuevo.";
+        }
     }
 }
